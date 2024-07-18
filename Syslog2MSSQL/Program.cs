@@ -31,6 +31,7 @@ namespace Syslog2MSSQL
                 try
                 {
                     SqlConnection sql = new(Environment.GetEnvironmentVariable("S2M_CONNECTIONSTRING"));
+                    sql.Open();
                     SqlCommand cmd = sql.CreateCommand();
                     cmd.CommandText = "INSERT INTO [logs] ([time], [host], [severity], [facility], [application], [process], [message]) VALUES (@TIME@, @HOST@, @SEVERITY@, @FACILITY@, @APPLICATION@, @PROCESS@, @MESSAGE@)";
                     cmd.Parameters.AddWithValue("@TIME@", (object)e.Item.Header.Timestamp ?? DBNull.Value);
