@@ -27,10 +27,10 @@ namespace Syslog2MSSQL
         }
         private static void StreamParser_ItemProcessed(object? sender, ItemEventArgs<ParsedSyslogMessage> e)
         {
+            Console.Write("*");
             Task.Run(() => {
                 try
                 {
-                    Console.Write("*");
                     if (SqlConnection.State != System.Data.ConnectionState.Open)
                     {
                         Console.WriteLine("Connecting to SQL...");
