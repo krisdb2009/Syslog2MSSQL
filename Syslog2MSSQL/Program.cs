@@ -44,10 +44,10 @@ namespace Syslog2MSSQL
                 cmd.ExecuteNonQuery();
                 Console.Write("#");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
