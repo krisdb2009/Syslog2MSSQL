@@ -29,6 +29,7 @@ namespace Syslog2MSSQL
         }
         private static void StreamParser_ItemProcessed(object? sender, ItemEventArgs<ParsedSyslogMessage> e)
         {
+            Console.Write("*");
             SqlCommand cmd = SqlConnection.CreateCommand();
             cmd.CommandText = "INSERT INTO [logs] ([time], [host], [severity], [facility], [application], [process], [message]) VALUES (@TIME@, @HOST@, @SEVERITY@, @FACILITY@, @APPLICATION@, @PROCESS@, @MESSAGE@)";
             cmd.Parameters.AddWithValue("@TIME@", (object)e.Item.Header.Timestamp ?? DBNull.Value);
@@ -39,6 +40,7 @@ namespace Syslog2MSSQL
             cmd.Parameters.AddWithValue("@PROCESS@", (object)e.Item.Header.ProcId ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@MESSAGE@", (object)e.Item.Message ?? DBNull.Value);
             cmd.ExecuteNonQuery();
+            Console.Write("#");
         }
     }
 }
