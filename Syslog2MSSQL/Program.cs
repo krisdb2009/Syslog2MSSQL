@@ -29,18 +29,26 @@ namespace Syslog2MSSQL
         }
         private static void StreamParser_ItemProcessed(object? sender, ItemEventArgs<ParsedSyslogMessage> e)
         {
-            Console.Write("*");
-            SqlCommand cmd = SqlConnection.CreateCommand();
-            cmd.CommandText = "INSERT INTO [logs] ([time], [host], [severity], [facility], [application], [process], [message]) VALUES (@TIME@, @HOST@, @SEVERITY@, @FACILITY@, @APPLICATION@, @PROCESS@, @MESSAGE@)";
-            cmd.Parameters.AddWithValue("@TIME@", (object)e.Item.Header.Timestamp ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@HOST@", (object)e.Item.Header.HostName ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@SEVERITY@", (object)e.Item.Severity.ToString() ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@FACILITY@", (object)e.Item.Facility.ToString() ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@APPLICATION@", (object)e.Item.Header.AppName ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@PROCESS@", (object)e.Item.Header.ProcId ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@MESSAGE@", (object)e.Item.Message ?? DBNull.Value);
-            cmd.ExecuteNonQuery();
-            Console.Write("#");
+            try
+            {
+                Console.Write("*");
+                SqlCommand cmd = SqlConnection.CreateCommand();
+                cmd.CommandText = "INSERT INTO [logs] ([time], [host], [severity], [facility], [application], [process], [message]) VALUES (@TIME@, @HOST@, @SEVERITY@, @FACILITY@, @APPLICATION@, @PROCESS@, @MESSAGE@)";
+                cmd.Parameters.AddWithValue("@TIME@", (object)e.Item.Header.Timestamp ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@HOST@", (object)e.Item.Header.HostName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@SEVERITY@", (object)e.Item.Severity.ToString() ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@FACILITY@", (object)e.Item.Facility.ToString() ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@APPLICATION@", (object)e.Item.Header.AppName ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@PROCESS@", (object)e.Item.Header.ProcId ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@MESSAGE@", (object)e.Item.Message ?? DBNull.Value);
+                cmd.ExecuteNonQuery();
+                Console.Write("#");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
         }
     }
 }
