@@ -25,7 +25,7 @@ namespace Syslog2MSSQL
             Pipeline.StreamParser.ItemProcessed += StreamParser_ItemProcessed;
             Pipeline.Start();
             Console.WriteLine("Running.");
-            Thread.Sleep(0);
+            Thread.Sleep(-1);
         }
         private static void StreamParser_ItemProcessed(object? sender, ItemEventArgs<ParsedSyslogMessage> e)
         {
