@@ -21,11 +21,21 @@ namespace Syslog2MSSQL
             );
             Console.WriteLine("Connecting to SQL...");
             SqlConnection.Open();
+            SqlConnection.StateChange += SqlConnection_StateChange;
             Console.WriteLine("Starting listener...");
             Pipeline.StreamParser.ItemProcessed += StreamParser_ItemProcessed;
             Pipeline.Start();
             Console.WriteLine("Running.");
             Thread.Sleep(-1);
+        }
+        private static void SqlConnection_StateChange(object sender, System.Data.StateChangeEventArgs e)
+        {
+            if (e.CurrentState == System.Data.ConnectionState.Closed)
+            {
+                Console.WriteLine("Reconnecting to SQL...");
+                SqlConnection.Open();
+                Console.WriteLine("Running.");
+            }
         }
         private static void StreamParser_ItemProcessed(object? sender, ItemEventArgs<ParsedSyslogMessage> e)
         {
