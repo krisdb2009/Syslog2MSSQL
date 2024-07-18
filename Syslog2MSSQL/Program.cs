@@ -10,7 +10,6 @@ namespace Syslog2MSSQL
     internal class Program
     {
         static SyslogUdpPipeline Pipeline = new(IPAddress.Any);
-        static SqlConnection SqlConnection = new(Environment.GetEnvironmentVariable("S2M_CONNECTIONSTRING"));
         static void Main(string[] args)
         {
             Assembly self = Assembly.GetExecutingAssembly();
@@ -31,12 +30,8 @@ namespace Syslog2MSSQL
             Task.Run(() => {
                 try
                 {
-                    if (SqlConnection.State != System.Data.ConnectionState.Open)
-                    {
-                        Console.WriteLine("Connecting to SQL...");
-                        SqlConnection.Open();
-                    }
-                    SqlCommand cmd = SqlConnection.CreateCommand();
+                    SqlConnection sql = new(Environment.GetEnvironmentVariable("S2M_CONNECTIONSTRING"));
+                    SqlCommand cmd = sql.CreateCommand();
                     cmd.CommandText = "INSERT INTO [logs] ([time], [host], [severity], [facility], [application], [process], [message]) VALUES (@TIME@, @HOST@, @SEVERITY@, @FACILITY@, @APPLICATION@, @PROCESS@, @MESSAGE@)";
                     cmd.Parameters.AddWithValue("@TIME@", (object)e.Item.Header.Timestamp ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@HOST@", (object)e.Item.Header.HostName ?? DBNull.Value);
@@ -46,6 +41,7 @@ namespace Syslog2MSSQL
                     cmd.Parameters.AddWithValue("@PROCESS@", (object)e.Item.Header.ProcId ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@MESSAGE@", (object)e.Item.Message ?? DBNull.Value);
                     cmd.ExecuteNonQuery();
+                    sql.Close();
                     Console.Write("#");
                 }
                 catch (Exception ex)
