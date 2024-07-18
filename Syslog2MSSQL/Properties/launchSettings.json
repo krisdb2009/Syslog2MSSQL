@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Syslog2MSSQL": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "S2M_CONNECTIONSTRING": "Persist Security Info=False;User ID=logs;Password=logs;Initial Catalog=logs;Server=ba-mv-db1;TrustServerCertificate=true;"
+      }
+    }
+  }
+}
